@@ -1,5 +1,6 @@
 <link href="{{ URL::asset('css/mainStyle/form.css') }}" rel="stylesheet" />
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <nav class="navbar">
@@ -12,7 +13,7 @@
           <span></span>
         </button>
         <a href="#">
-          <h4>save<span>Location</span></h4>
+            <h4>enregistrer<span>L'emplacement</span></h4>
         </a>
       </div>
 
@@ -20,11 +21,18 @@
         <ul class="navbar-nav">
           <li class="navbar-dropdown">
             <a href="/exportFilesPoint" class="dropdown-toggler" data-dropdown="my-dropdown-id">
-              download <i class="fa fa-angle-down"></i>
+                télécharger <i class="fa fa-angle-down"></i>
             </a>
 
           </li>
-          <li><a href="/logout">Log out</a></li>
+          @if (Auth::user()->isAdmin)
+          <li class="navbar-dropdown">
+            <a href="/exportAdminFilesPoint" class="dropdown-toggler" data-dropdown="my-dropdown-id">
+                Téléchargez tout  <i class="fa fa-angle-down"></i>
+            </a>
+          </li>
+          @endif
+          <li><a href="/logout">Se déconnecter</a></li>
         </ul>
       </div>
     </div>

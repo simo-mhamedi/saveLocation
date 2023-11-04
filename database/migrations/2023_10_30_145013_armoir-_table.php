@@ -15,6 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('longitude')->nullable();
             $table->string('secteur')->nullable();
+            $table->string('numero')->nullable();
+            $table->string('numeroCompteur')->nullable();
+            $table->string('calibre')->nullable();
+            $table->string('tension')->nullable();
+            $table->string('typeCommande')->nullable();
+            $table->string('nombreDepart')->nullable();
+            $table->string('puissance')->nullable();
             $table->string('latitude')->nullable();
             $table->string('image')->nullable();
             $table->string('conformite')->nullable();

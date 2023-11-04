@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exports\UsersExport;
 use App\Exports\UsersExport2;
+use App\Exports\UsersExport3;
+use App\Exports\UsersExport4;
 use App\Models\armoir;
 use App\Models\armoirs;
 use App\Models\exceldatas;
@@ -74,8 +76,14 @@ class formController extends Controller
         if ($user == null) {
             return view('auth.login');
         }
-        $data = $request->only(['arrondissement']);
+        $data = $request->only(['arrondissement', 'numero']);
         Session::put('firstPageData', $data);
+        $numeroExists = armoirs::where('numero', $data['numero'])->exists();
+        if ($numeroExists) {
+            session(['numeroExists' => true]);
+            return view("main.armoir.fome");
+        }
+        session(['numeroExists' => false]);
         return view("main.armoir.locationForm");
     }
     public function sendarrondissementPoint(Request $request)
@@ -86,7 +94,10 @@ class formController extends Controller
         }
         $data = $request->only(['arrondissement']);
         Session::put('firstPageData', $data);
-        return view("main.points.locationForm");
+        $armoirs=armoirs::select("numero")
+        ->distinct("numero")
+        ->get();
+        return view("main.points.locationForm",compact("armoirs"));
     }
     public function borough()
     {
@@ -111,61 +122,34 @@ class formController extends Controller
     public function saveLocationArmoir(Request $req)
     {
         $data = $req->session()->get('firstPageData');
-        $data += $req->only(['secteur']);
         Session::put('firstPageData', $data);
 
-        $base64Image = $req->input('image');
-        if ($base64Image != null) {
-            // Extract the image data from the data URL
-            [$type, $data] = explode(';', $base64Image);
-            [, $data] = explode(',', $data);
-            $imageData = base64_decode($data);
-
-            // Generate a unique file name for the image
-            $imageName = uniqid() . '.png'; // You can use a different extension if the image format is not PNG.
-
-            // Specify the directory within the "public" disk where you want to save the image
+        $base64Image = $req->photo;
+        if ($base64Image!= null) {
+            $photo =  $base64Image;
+            $fileName = time() . '_' . $photo->getClientOriginalName();
             $directory = 'image'; // You can change this directory name if needed.
-
-            // Save the image to the specified directory within the "public" disk
-            Storage::disk('public')->put($directory . '/' . $imageName, $imageData);
-
-            // Construct the image path
-            $imagePath = 'storage/' . $directory . '/' . $imageName;
+            $photo->storeAs($directory, $fileName, 'public');
+                $imagePath = 'storage/' . $directory.'/'.$fileName;
+                Session::put('imagePath', $imagePath);
+            }
             // You can save the image path to your database here if needed.
-            Session::put('imagePath', $imagePath);
-        }
-        $path = url()->previous();
         return response()->json(['message' => 'armoir']);
     }
     public function saveLocationPoints(Request $req)
     {
         $data = $req->session()->get('firstPageData');
-        $data += $req->only(['secteur']);
+        $data += $req->only(['secteur','numero']);
         Session::put('firstPageData', $data);
-
-        $base64Image = $req->input('image');
-        if ($base64Image != null) {
-            // Extract the image data from the data URL
-            [$type, $data] = explode(';', $base64Image);
-            [, $data] = explode(',', $data);
-            $imageData = base64_decode($data);
-
-            // Generate a unique file name for the image
-            $imageName = uniqid() . '.png'; // You can use a different extension if the image format is not PNG.
-
-            // Specify the directory within the "public" disk where you want to save the image
+        $base64Image = $req->photo;
+        if ($base64Image!= null) {
+            $photo =  $base64Image;
+            $fileName = time() . '_' . $photo->getClientOriginalName();
             $directory = 'image'; // You can change this directory name if needed.
-
-            // Save the image to the specified directory within the "public" disk
-            Storage::disk('public')->put($directory . '/' . $imageName, $imageData);
-
-            // Construct the image path
-            $imagePath = 'storage/' . $directory . '/' . $imageName;
-            // You can save the image path to your database here if needed.
-            Session::put('imagePath', $imagePath);
-        }
-        $path = url()->previous();
+            $photo->storeAs($directory, $fileName, 'public');
+                $imagePath = 'storage/' . $directory.'/'.$fileName;
+                Session::put('imagePath', $imagePath);
+            }
         return response()->json(['message' => 'points']);
     }
     public function saveArmoir(Request $req)
@@ -194,8 +178,15 @@ class formController extends Controller
         $armoir->conformite = $req->conformite;
         $armoir->observation = $req->observation;
         $armoir->arrondissement = $test['arrondissement'];
-        $armoir->type = $req->type;
+        $armoir->type = $req->typear;
         $armoir->source = $req->source;
+        $armoir->numero = $test['numero'];
+        $armoir->numeroCompteur = $req->numeroCompteur;
+        $armoir->calibre = $req->Calibre;
+        $armoir->tension = $req->Tension;
+        $armoir->typeCommande = $req->typeCommande;
+        $armoir->nombreDepart = $req->nombreDepart;
+        $armoir->puissance = $req->puissance;
         $armoir->secteur = $test['secteur'];
         $armoir->user_id = $user->id;
         $armoir->save();
@@ -231,6 +222,7 @@ class formController extends Controller
         $point->etatReseau = $req->etatReseau;
         $point->etatCable = $req->etatCable;
         $point->nf = $req->nf;
+        $point->numero = $test['numero'];
         $point->typeSupport = $req->typeSupport;
         $point->nombreConsole = $req->nombreConsole;
         $point->etatSupport = $req->etatSupport;
@@ -252,11 +244,21 @@ class formController extends Controller
     public function exportFilesArmoir()
     {
         $user = Auth::user();
-        return Excel::download(new UsersExport($user->id), 'users.xlsx');
+        return Excel::download(new UsersExport($user->id),  $user->userName.'.xlsx');
     }
     public function exportFilesPoint()
     {
         $user = Auth::user();
-        return Excel::download(new UsersExport2($user->id), 'users.xlsx');
+        return Excel::download(new UsersExport2($user->id), $user->userName.'.xlsx');
+    }
+    public function exportAdminFilesArmoir()
+    {
+        $user = Auth::user();
+        return Excel::download(new UsersExport4(),  $user->userName.'.xlsx');
+    }
+    public function exportAdminFilesPoint()
+    {
+        $user = Auth::user();
+        return Excel::download(new UsersExport3(), $user->userName.'.xlsx');
     }
 }

@@ -28,6 +28,7 @@ class userController extends Controller
         $user->name = $req->fullname;
         $user->password = bcrypt($req->password);
         $user->userName = $req->username;
+        $user->email = $req->email;
         $user->save();
         Auth::loginUsingId($user->id);
         return redirect()->intended('/');
@@ -35,7 +36,7 @@ class userController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('userName', 'password');
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             // Authentication successful
             $user = Auth::user();

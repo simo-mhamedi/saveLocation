@@ -3,6 +3,10 @@
 
 
 <link href="{{ URL::asset('css/mainStyle/form.css') }}" rel="stylesheet" />
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
 <style>
     select{
         width: 100%;
@@ -85,6 +89,8 @@
 .custom-button:hover svg {
   transform: rotate(45deg);
 }
+#map { height: 180px; }
+
 </style>
 <head>
     <script>
@@ -92,6 +98,12 @@
             window.location.href = '/points';
         }
       </script>
+             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+             crossorigin=""/>
+             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+             crossorigin=""></script>
 </head>
 @include("inc.pointnav")
 
@@ -114,6 +126,7 @@
             </div>
             <span>Get Current Position</span>
         </a>
+        <div id="map"></div>
 
         <div class="user__details">
             <div class="input__box">
@@ -297,6 +310,13 @@
             lon.innerHTML = position.coords.longitude;
             latinput.value = position.coords.latitude;
             loninput.value =position.coords.longitude;
+            var map = L.map('map').setView([latinput.value,loninput.value], 13);
+            var marker = L.marker([latinput.value,loninput.value]).addTo(map);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
         }
 
         function onGeoError(error) {

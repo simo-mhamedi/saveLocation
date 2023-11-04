@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('longitude')->nullable();
             $table->string('secteur')->nullable();
+            $table->string('numero')->nullable();
             $table->string('latitude')->nullable();
             $table->string('image')->nullable();
             $table->string('code')->nullable();

@@ -8,7 +8,7 @@ use App\Models\points;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport2 implements FromCollection, WithHeadings
+class UsersExport3 implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -17,16 +17,16 @@ class UsersExport2 implements FromCollection, WithHeadings
     protected $userId;
 
 
-    public function __construct($id)
+    public function __construct()
     {
-        $this->id = $id;
+
     }
 
 
     public function collection()
     {
         // Assuming 'exceldatas' is your model
-        return $result = points::Where('user_id', $this->id)->
+        return $result = points::
         select([
             'arrondissement',
             'numero',

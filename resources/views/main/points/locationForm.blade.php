@@ -3,6 +3,10 @@
 
 
 <link href="{{ URL::asset('css/mainStyle/form.css') }}" rel="stylesheet" />
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
 <style>
     select{
         width: 100%;
@@ -219,13 +223,112 @@ margin-bottom: 10px;
  .button input:hover {
   background: linear-gradient(-135deg, var(--main-blue), var(--main-purple));
 }
+.new-container {
+  height: 300px;
+  width: 300px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 30px rgba(0, 0, 0, .2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  gap: 5px;
+  background-color: rgba(0, 110, 255, 0.041);
+}
+
+.new-header {
+  flex: 1;
+  width: 100%;
+  border: 2px dashed royalblue;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.new-header svg {
+  height: 100px;
+}
+
+.new-header p {
+  text-align: center;
+  color: black;
+}
+
+.new-footer {
+  background-color: rgba(0, 110, 255, 0.075);
+  width: 100%;
+  height: 40px;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: black;
+  border: none;
+}
+
+.new-footer svg {
+  height: 130%;
+  fill: royalblue;
+  background-color: rgba(70, 66, 66, 0.103);
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: 0 2px 30px rgba(0, 0, 0, 0.205);
+}
+
+.new-footer p {
+  flex: 1;
+  text-align: center;
+}
+
+#file {
+  display: none;
+}
 </style>
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
-        function goBack() {
-            window.location.href = '/points';
+        function displayImage(input) {
+            var uploadedImage = document.getElementById('uploaded-image');
+            var uploadedSvg = document.getElementById('uploaded-svg');
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var fileContent = e.target.result;
+
+                    if (input.files[0].name.toLowerCase().endsWith('.svg')) {
+                        // Display the uploaded SVG
+                        uploadedImage.style.display = 'none';
+                        uploadedSvg.style.display = 'block';
+                        uploadedSvg.innerHTML = fileContent;
+                    } else {
+                        // Display the uploaded image (e.g., PNG, JPG, etc.)
+                        uploadedSvg.style.display = 'none';
+                        uploadedImage.style.display = 'block';
+                        uploadedImage.src = fileContent;
+                    }
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                // Hide both image and SVG when no file is selected
+                uploadedImage.style.display = 'none';
+                uploadedSvg.style.display = 'none';
+            }
         }
-      </script>
+        onchange = "displayImage(this)"
+
+        function goBack() {
+            window.location.href = '/borough';
+        }
+    </script>
 </head>
 @include("inc.pointnav")
 
@@ -244,21 +347,30 @@ margin-bottom: 10px;
               <input type="text" style=" margin-bottom: 20px;" id="secteur" name="secteur" placeholder="secteur">
             </div>
 <div id="error"></div>
-<span class="details">image de secteur</span>
+<div class="user__details">
+    <div class="input__box">
+        <span class="details">Numero</span>
+        <select name="Numero" id="numero">
+            <option value="" style="display: none;">Numero</option>
+            @foreach($armoirs as $armoir)
+                <option value="{{ $armoir->numero }}">{{ $armoir->numero }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
 
-        <video id="cameraPreview" autoplay  style="display: none;margin-top:20px"></video>
-        <canvas id="pictureCanvas" style="display: none" style="margin-top:20px !imp" ></canvas>
-        <img id="capturedImage" style="display: none" style="margin-top:20px" />
-        <a class="custom-button" id="cameraButton" style="margin-top:20px">
-            <div class="svg-wrapper-1">
-            </div>
-            <span>Ouvrir la caméra</span>
-        </a>
-        <a class="custom-button" id="takePictureButton">
-            <div class="svg-wrapper-1">
-            </div>
-            <span>Prendre une photo</span>
-        </a>
+<span class="details">image de secteur</span>
+<div class="new-container">
+    <div class="new-header">
+      <img id="uploaded-image" src=""  alt="Uploaded Image" style="width:100%;display: none;">
+      <svg id="uploaded-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+        <path d="M7 10V9C7 6.23858 9.23858 4 12 4C14.7614 4 17 6.23858 17 9V10C19.2091 10 21 11.7909 21 14C21 15.4806 20.1956 16.8084 19 17.5M7 10C4.79086 10 3 11.7909 3 14C3 15.4806 3.8044 16.8084 5 17.5M7 10C7.43285 10 7.84965 10.0688 8.24006 10.1959M12 12V21M12 12L15 15M12 12L9 15" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>     <p>Browse File to upload!</p>
+    </div>
+    <label for="file" class="new-footer">
+      <svg fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M15.331 6H8.5v20h15V14.154h-8.169z"></path><path d="M18.153 6h-.009v5.342H23.5v-.002z"></path></g></svg>     <p>Not selected file</p>
+    </label>
+    <input id="file" onchange="displayImage(this)" type="file">
+  </div>
         <div class="button">
             <input type="submit"  id="getLocation" value="Suivant">
         </div>
@@ -276,17 +388,25 @@ margin-bottom: 10px;
         document.getElementById('getLocation').addEventListener('click', function() {
             // Check if geolocation is available in the browser
           // Capture the image data (you need to replace 'imageData' with the actual image data)
-                    var imageData = capturedImage.src;
-                    var secteur=document.querySelector("#secteur").value;
-                    // Send the location to the server using AJAX
-                    $.ajax({
-                        url: '/save-location-point',
-                        method: 'POST',
-                        data: {
-                            secteur:secteur,
-                            image:imageData ?? "",
-                            _token: "{{ csrf_token() }}" // Include CSRF token for Laravel
-                        },
+          var photoInput = document.querySelector("#file");
+                var secteur = document.querySelector("#secteur").value;
+                var numero = document.querySelector("#numero").value;
+                var formData = new FormData();
+                formData.append('photo', photoInput.files[0]);
+                formData.append('secteur', secteur);
+                formData.append('numero', numero);
+                // Send the location to the server us
+                    $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '/save-location-point',
+                    method: 'POST',
+                    data: formData,
+                    processData: false, // Important! To prevent jQuery from processing the FormData
+                    contentType: false,
                         success: function(response) {
                             if(response.message==="armoir")
                             {
@@ -346,7 +466,7 @@ margin-bottom: 10px;
             }
 
             try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 cameraPreview.srcObject = mediaStream;
                 cameraPreview.style.display = 'block';
                 takePictureButton.disabled = false;

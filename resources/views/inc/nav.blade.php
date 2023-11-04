@@ -1,5 +1,6 @@
 <link href="{{ URL::asset('css/mainStyle/form.css') }}" rel="stylesheet" />
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <nav class="navbar">
@@ -24,6 +25,14 @@
             </a>
 
           </li>
+          @if (Auth::user()->isAdmin)
+          <li class="navbar-dropdown">
+            <a href="/exportAdminFilesArmoir" class="dropdown-toggler" data-dropdown="my-dropdown-id">
+                Téléchargez tout  <i class="fa fa-angle-down"></i>
+            </a>
+          </li>
+          @endif
+
           <li><a href="/logout">Se déconnecter</a></li>
         </ul>
       </div>

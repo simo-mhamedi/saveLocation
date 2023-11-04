@@ -7,7 +7,7 @@ use App\Models\exceldatas;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport implements FromCollection, WithHeadings
+class UsersExport4 implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -15,15 +15,13 @@ class UsersExport implements FromCollection, WithHeadings
     protected $id;
 
 
-    public function __construct($id)
+    public function __construct()
     {
-        $this->id = $id;
     }
     public function collection()
     {
         // Assuming 'exceldatas' is your model
-        return $result = armoirs::where('user_id', $this->id)
-        ->select(
+        return $result = armoirs::select(
         'numero',
         'arrondissement',
         'secteur',

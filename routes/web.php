@@ -43,6 +43,9 @@ Route::get('/location',[formController::class,'location'])->name('location');
 Route::get('/exportFilesArmoir', [formController::class, 'exportFilesArmoir']);
 Route::get('/exportFilesPoint', [formController::class, 'exportFilesPoint']);
 
+Route::get('/exportAdminFilesArmoir', [formController::class, 'exportAdminFilesArmoir']);
+Route::get('/exportAdminFilesPoint', [formController::class, 'exportAdminFilesPoint']);
+
 
 Route::get('/register',[userController::class,'registerView']);
 Route::get('/login',[userController::class,'loginView']);

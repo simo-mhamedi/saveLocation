@@ -1,5 +1,8 @@
 
     <link href="{{ URL::asset('css/authStyle/register.css') }}" rel="stylesheet" />
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
     {{-- <style>
         form {
             height: auto;
@@ -132,6 +135,10 @@
                   <div class="field padding-bottom--24">
                     <label for="username">Nom d'utilisateur</label>
                     <input type="text" required name="username" placeholder="User name" id="username">
+                </div>
+                <div class="field padding-bottom--24">
+                    <label for="username">Email</label>
+                    <input type="email" required name="email" placeholder="Email" id="email">
                 </div>
                   <div class="field padding-bottom--24">
                     <div class="grid--50-50">

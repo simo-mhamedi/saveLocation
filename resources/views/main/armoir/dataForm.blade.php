@@ -3,6 +3,10 @@
 
 
 <link href="{{ URL::asset('css/mainStyle/form.css') }}" rel="stylesheet" />
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
 <style>
     select{
         width: 100%;
@@ -85,6 +89,8 @@
 .custom-button:hover svg {
   transform: rotate(45deg);
 }
+#map { height: 180px; }
+
 </style>
 <head>
     <script>
@@ -92,6 +98,12 @@
             window.location.href = '/borough';
         }
       </script>
+       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+       crossorigin=""/>
+       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+       crossorigin=""></script>
 </head>
 @include("inc.nav")
 
@@ -114,6 +126,7 @@
             </div>
             <span>Get Current Position</span>
         </a>
+        <div id="map"></div>
       <div class="user__details">
         <div class="input__box">
           <span class="details">Source</span>
@@ -141,8 +154,43 @@
       </div>
       <div class="input__box">
         <span class="details">Type</span>
-        <input type="text" name="type"  placeholder="Type">
+        <input type="text" name="typear"  placeholder="Type">
       </div>
+    </div>
+    <div class="user__details">
+    <div class="input__box">
+      <span class="details">Numero de compteur</span>
+      <input type="text" name="numeroCompteur"  placeholder="Numero de compteur">
+    </div>
+    </div>
+    <div class="user__details">
+    <div class="input__box">
+      <span class="details">Calibre</span>
+      <input type="text" name="Calibre"  placeholder="Calibre">
+    </div>
+    </div>
+    <div class="user__details">
+    <div class="input__box">
+      <span class="details">Tension</span>
+      <input type="text" name="Tension"  placeholder="Tension">
+    </div>
+    </div>
+      <div class="user__details">
+        <div class="input__box">Type de commande</span>
+         <select name="typeCommande">
+            <option value="" style="display: none;">Type de commande</option>
+            <option value="horloge astronomique">horloge astronomique</option>
+            <option value="PAS DE MISE À LA TERRE">photocellule ou sans</option>
+         </select>
+        </div>
+        <div class="input__box">
+            <span class="details">Nombre de depart</span>
+            <input type="text" name="nombreDepart"  placeholder="Nombre de depart">
+          </div>
+        <div class="input__box">
+            <span class="details">Puissance</span>
+            <input type="text" name="puissance"  placeholder="Puissance">
+          </div>
       </div>
       <div class="button">
         <input type="submit" name="type"  id="getLocation" value="save">
@@ -177,6 +225,13 @@
             lon.innerHTML = position.coords.longitude;
             latinput.value = position.coords.latitude;
             loninput.value =position.coords.longitude;
+            var map = L.map('map').setView([latinput.value,loninput.value], 13);
+            var marker = L.marker([latinput.value,loninput.value]).addTo(map);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
         }
 
         function onGeoError(error) {
