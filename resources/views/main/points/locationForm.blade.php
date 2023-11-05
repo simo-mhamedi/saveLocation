@@ -224,8 +224,9 @@ margin-bottom: 10px;
   background: linear-gradient(-135deg, var(--main-blue), var(--main-purple));
 }
 .new-container {
-  height: 300px;
-  width: 300px;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 33px;
   border-radius: 10px;
   box-shadow: 4px 4px 30px rgba(0, 0, 0, .2);
   display: flex;
@@ -392,9 +393,9 @@ margin-bottom: 10px;
                 var secteur = document.querySelector("#secteur").value;
                 var numero = document.querySelector("#numero").value;
                 var formData = new FormData();
-                formData.append('photo', photoInput.files[0]);
-                formData.append('secteur', secteur);
-                formData.append('numero', numero);
+                formData.append('photo', photoInput.files[0] ?? "");
+                formData.append('secteur', secteur ?? "");
+                formData.append('numero', numero ?? "");
                 // Send the location to the server us
                     $.ajaxSetup({
                     headers: {

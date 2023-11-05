@@ -178,7 +178,6 @@ handleSmallScreens()
                             _token: "{{ csrf_token() }}" // Include CSRF token for Laravel
                         },
                         success: function(response) {
-                            alert('Location saved successfully.');
                             location.reload(); // This will reload the page
                         },
                         error: function() {

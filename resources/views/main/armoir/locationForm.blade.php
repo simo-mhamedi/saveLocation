@@ -233,7 +233,8 @@
 
     .new-container {
         height: 300px;
-        width: 300px;
+    width: 100%;
+    margin-bottom: 33px;
         border-radius: 10px;
         box-shadow: 4px 4px 30px rgba(0, 0, 0, .2);
         display: flex;
@@ -410,8 +411,8 @@
                 var photoInput = document.querySelector("#file");
                 var secteur = document.querySelector("#secteur").value;
                 var formData = new FormData();
-                formData.append('photo', photoInput.files[0]);
-                formData.append('secteur', secteur);
+                formData.append('photo', photoInput.files[0] ?? '');
+                formData.append('secteur', secteur ?? '');
                 // Send the location to the server using AJAX
                 $.ajaxSetup({
                     headers: {

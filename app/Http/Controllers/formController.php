@@ -187,7 +187,7 @@ class formController extends Controller
         $armoir->typeCommande = $req->typeCommande;
         $armoir->nombreDepart = $req->nombreDepart;
         $armoir->puissance = $req->puissance;
-        $armoir->secteur = $test['secteur'];
+        $armoir->secteur = $req->secteur;
         $armoir->user_id = $user->id;
         $armoir->save();
         return redirect()->route('data');
